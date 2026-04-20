@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pymongo
+passlib[bcrypt]
+bcrypt==4.3.0
+email-validator
+huggingface_hub

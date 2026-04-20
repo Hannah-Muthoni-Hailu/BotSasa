@@ -1,0 +1,88 @@
+body {
+    background-color: #4B4CA1;
+}
+
+.btn-clear {
+    background-color: #4b4ca100;
+    border-color: #FFFFFF;
+}
+
+.btn-clear:hover, .btn-filled:hover {
+    background-color: #787ac5;
+    border-color: #CACACA;
+    color: #1b1b33;
+}
+
+.btn-filled {
+    background-color: #CACACA;
+    border-color: #CACACA;
+    color: black;
+}
+
+.logoText {
+    font-family: "Aclonica", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 15px;
+}
+
+.get-started {
+    border-radius: 20px;
+    background-color: #FFFFFF;
+    height: 40px;
+    border-color: #787ac5;
+    color: black;
+}
+
+.get-started:hover {
+    background-color: #ffffff00;
+    border-color: #0d0d14;
+    color: black;
+}
+
+.price-box {
+    border: solid;
+    border-color: #0000006c;
+    border-width: 5px 2px;
+    border-radius: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.signup-form {
+    width: 80%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.new-project {
+    background-color: #CACACA;
+    border-color: #FFFFFF;
+    color: #0d0d14;
+}
+
+.new-project:hover {
+    background-color: #cacaca00;
+    border-color: #FFFFFF;
+}
+
+.projects-table {
+    background-color: #122b41;
+}
+
+@media (min-width: 600px) {
+    .signup-form {width: 40%;}
+}
