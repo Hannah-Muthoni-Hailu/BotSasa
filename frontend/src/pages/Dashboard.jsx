@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, Modal, Form, Alert, Card } from 'react-bootstrap';
+import { Container, Button, Modal, Form, Alert, Card, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Clipboard, Check } from 'react-bootstrap-icons';
 import trash from '../assets/Trash 2.png'
@@ -18,7 +18,7 @@ export default function Dashboard() {
                 navigate("/")
             }
             try {
-                const res = await fetch("http://127.0.0.1:8000/verify-token", {
+                const res = await fetch("https://botsasa-6acp.onrender.com/verify-token", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -39,6 +39,7 @@ export default function Dashboard() {
         verifyUser();
     }, [token, navigate]);
     
+    const [isSending, setIsSending] = useState(false);
     const [show, setShow] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [projects, setProject] = useState(() => {
@@ -63,9 +64,10 @@ export default function Dashboard() {
     const handleDeleteConfirmed = async () => {
         setError("")
         try {
+            setIsSending(true);
             const deleteProjectName = editedProject.projectName
 
-            const res = await fetch("http://127.0.0.1:8000/delete-project", {
+            const res = await fetch("https://botsasa-6acp.onrender.com/delete-project", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -88,7 +90,9 @@ export default function Dashboard() {
             setShowDelete(false);
             setEditedProject({});
         } catch (error) {
-            
+            setError(error.message);
+        } finally {
+            setIsSending(false);
         }
     }
 
@@ -101,11 +105,12 @@ export default function Dashboard() {
     const handleSubmitEdit = async () => {
         setError("")
         try {
+            setIsSending(true);
             const oldProjectName = editedProject.oldProjectName
             const newProjectName = editedProject.projectName
             const newProjectContext = editedProject.context
 
-            const res = await fetch("http://127.0.0.1:8000/edit-project", {
+            const res = await fetch("https://botsasa-6acp.onrender.com/edit-project", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -129,6 +134,8 @@ export default function Dashboard() {
             setEditedProject({});
         } catch (error) {
             setError(error.message);
+        } finally {
+            setIsSending(false);
         }
     }
 
@@ -156,9 +163,10 @@ export default function Dashboard() {
     const handleSubmit = async () => {
         setError("")
         try {
+            setIsSending(true);
             const token = localStorage.getItem("access_token")
 
-            const res = await fetch("http://127.0.0.1:8000/new-project", {
+            const res = await fetch("https://botsasa-6acp.onrender.com/new-project", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -180,7 +188,7 @@ export default function Dashboard() {
             // Reset variables
             setProjectName("")
             setProjectDetails("")
-            setProjectType("free")
+            setProjectType("paid")
 
             // Close current Modal
             setShow(false);
@@ -189,6 +197,8 @@ export default function Dashboard() {
 
         } catch (error) {
             setError(error.message);
+        } finally {
+            setIsSending(false);
         }
     }
 
@@ -272,38 +282,27 @@ export default function Dashboard() {
                         <Form.Control type="text" placeholder="My cool project" value={projectName} onChange={e => setProjectName(e.target.value)} />
                     </Form.Group>
 
-                    <div className="mb-3">
-                        <Form.Check
-                            inline
-                            type="radio"
-                            id="isPaidProject"
-                            label="Free Tier"
-                            name="projectTier"
-                            checked={projectType === "free"}
-                            onChange={() => setProjectType("free")}
-                        />
-                        <Form.Check
-                            inline
-                            type="radio"
-                            id="notPaidProject"
-                            label="Paid Tier"
-                            name="projectTier"
-                            checked={projectType === "paid"}
-                            onChange={() => { setProjectType("paid") }}
-                        />
-                        <Form.Group controlId='contextFile' className='mb-3 mt-3'>
-                            <Form.Label>
-                                Input context file (.txt format only)
-                            </Form.Label>
-                            <Form.Control type='file' accept='.txt' onChange={handleFileChange} />
-                        </Form.Group>
-                    </div>
-                    {
-                        projectType == 'paid' ? <p>Enter credit card details</p> : null
-                    }
+                    <Form.Group controlId='contextFile' className='mb-3 mt-3'>
+                        <Form.Label>
+                            Input context file (.txt format only)
+                        </Form.Label>
+                        <Form.Control type='file' accept='.txt' onChange={handleFileChange} />
+                    </Form.Group>
                     <div className="text-center">
                         <Button className='get-started me-2' style={{ 'width': "80px" }} onClick={() => setShow(false)}>Close</Button>
-                        <Button className='get-started' onClick={handleSubmit}>Submit</Button>
+                        <Button className='get-started' onClick={handleSubmit}>
+                            {isSending ?
+                                <Spinner
+                                    as="span"
+                                    animation="grow"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                /> :
+                                null
+                            }
+                            Submit
+                        </Button>
                     </div>
                 </Form>
             </Modal>
@@ -326,6 +325,7 @@ export default function Dashboard() {
                                 </pre>
                             </Card.Body>
                         </Card>
+                        <p>To use your chatbot, send a fetch request to "<a href="#" className='text-black text-decoration-underline'>https://botsasa-6acp.onrender.com/chatbot</a>" <br /> supplying <code>("apikey": "string", "text": "string" )</code>.</p>
                     </Modal.Body>
             </Modal>
 
@@ -338,29 +338,6 @@ export default function Dashboard() {
                         <Form.Control type="text" placeholder="My cool project" value={editedProject.projectName} onChange={e => setEditedProject({...editedProject, projectName: e.target.value})} />
                     </Form.Group>
 
-                    <div className="mb-3">
-                        <Form.Check
-                            inline
-                            type="radio"
-                            id="isPaidProject"
-                            label="Free Tier"
-                            name="projectTier"
-                            checked={editedProject.quotaLimit}
-                            onChange={() => setEditedProject({...editedProject, projectType: "free"})}
-                            disabled
-                        />
-                        <Form.Check
-                            inline
-                            type="radio"
-                            id="notPaidProject"
-                            label="Paid Tier"
-                            name="projectTier"
-                            checked={editedProject.quotaLimit}
-                            onChange={() => setEditedProject({...editedProject, projectType: "paid"})}
-                            disabled
-                        /> <p className='text-danger'><small>You cannot edit project type. Please create a new project instead</small></p>
-                        
-                    </div>
                     <Form.Group controlId='contextFile' className='mb-3 mt-3'>
                         <Form.Label>
                             Input context file (.txt format only)
@@ -372,7 +349,19 @@ export default function Dashboard() {
                     }
                     <div className="text-center">
                         <Button className='get-started me-2' style={{ 'width': "80px" }} onClick={() => setShowEdit(false)}>Close</Button>
-                        <Button className='get-started' onClick={handleSubmitEdit}>Submit</Button>
+                        <Button className='get-started' onClick={handleSubmitEdit}>
+                            {isSending ?
+                                <Spinner
+                                    as="span"
+                                    animation="grow"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                /> :
+                                null
+                            }
+                            Submit
+                        </Button>
                     </div>
                 </Form>
             </Modal>
@@ -383,7 +372,19 @@ export default function Dashboard() {
                     <h3>Are you sure you want to delete this project?</h3>
                     <p className="text-danger">This action cannot be undone</p>
                     <Button className='get-started me-2' style={{ 'width': "80px" }} onClick={() => setShowDelete(false)}>No</Button>
-                    <Button className='get-started' style={{ 'width': "80px" }} onClick={handleDeleteConfirmed}>Yes</Button>
+                    <Button className='get-started' style={{ 'width': "80px" }} onClick={handleDeleteConfirmed}>
+                        {isSending ?
+                            <Spinner
+                                as="span"
+                                animation="grow"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                            /> :
+                            null
+                        }
+                        Yes
+                    </Button>
                 </Modal.Body>
             </Modal>
         </Container>

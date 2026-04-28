@@ -83,6 +83,44 @@ a:hover {
     background-color: #122b41;
 }
 
+#chatbotIcon {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    border-radius: 50%;
+    height: 70px;
+    width: 70px;
+    background-color: transparent;
+    background: radial-gradient(#4B4CA1, #7f81ff);
+    border-color: #0c0c14;
+    z-index: 10000;
+}
+
+#modal {
+    position: fixed;
+    bottom: 60px;
+    right: 5px;
+    z-index: 10000;
+    background-color: transparent;
+}
+
+#modalBody {
+    height: 450px;
+    width: 350px;
+    text-align: center;
+    color: #1b1b1ba8;
+}
+
+#chatbotSend {
+    background-color: #e9ecef;
+    border: none;
+}
+
+.modalHeader {
+    background-color: #4B4CA1;
+    padding: 10px;
+}
+
 @media (min-width: 600px) {
     .signup-form {width: 40%;}
 }

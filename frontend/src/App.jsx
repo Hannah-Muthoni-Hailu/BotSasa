@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Signup from './pages/Signup';
 import Settings from './pages/Settings';
 import Footer from './components/Footer';
+import Chatbot from './pages/Chatbot';
 import './App.css'
 
 function App() {
@@ -14,8 +15,10 @@ function App() {
                 <Route path='/dashboard' element={<Dashboard />} />
                 <Route path='/signup' element={<Signup />} />
                 <Route path='/settings' element={<Settings />} />
+                <Route path='/chatbot' element={<Chatbot />} />
                 <Route path='*' element={<h2>404. Page not found</h2>} />
             </Routes>
+            <Chatbot />
         </BrowserRouter>
     )
 }

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, Link, data } from 'react-router-dom';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import logo from '../assets/logo.png'
 
 export default function Signup() {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const [isSending, setIsSending] = useState(false);
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -20,7 +21,8 @@ export default function Signup() {
     const handleSignup = async () => {
         setErrors("") // Reset errors list
         try {
-            const res = await fetch("http://127.0.0.1:8000/signup", {
+            setIsSending(true);
+            const res = await fetch("https://botsasa-6acp.onrender.com/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -46,13 +48,16 @@ export default function Signup() {
 
         } catch (err) {
             setErrors(err.message);
+        } finally {
+            setIsSending(false);
         }
     }
 
     const handleLogin = async () => {
         setErrors("")
         try {
-            const res = await fetch("http://127.0.0.1:8000/login", {
+            setIsSending(true);
+            const res = await fetch("https://botsasa-6acp.onrender.com/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -78,7 +83,9 @@ export default function Signup() {
             navigate("/dashboard");
 
         } catch (error) {
-            setErrors(err.message);
+            setErrors(error.message);
+        } finally {
+            setIsSending(false);
         }
     }
 
@@ -119,6 +126,16 @@ export default function Signup() {
                     <Link state={{ isSignup: 'true' }}>
                         <Button className='get-started' onClick={isSignup == 'true' ? handleSignup : handleLogin}>
                             { isSignup == 'true' ? 'Signup' : 'Login' }
+                            {isSending ?
+                                <Spinner
+                                    as="span"
+                                    animation="grow"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                /> :
+                                null
+                            }
                         </Button>
                     </Link>
                 </div>
