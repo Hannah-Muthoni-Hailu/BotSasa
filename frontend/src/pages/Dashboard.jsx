@@ -154,7 +154,7 @@ export default function Dashboard() {
             setError("");
             const text = await file.text();
 
-            editedProject == {} ? setProjectDetails(text) : setEditedProject({...editedProject, context: text})
+            editedProject == {} ? setEditedProject({...editedProject, context: text}) : setProjectDetails(text)
         } catch (err) {
             setError("Failed to read file")
         }
