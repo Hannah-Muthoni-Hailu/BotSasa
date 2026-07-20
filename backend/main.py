@@ -154,8 +154,12 @@ def signup(user: UserSignup):
     # Return all the user's projects so they can be displayed on the dashboard
     cursor = projects_collection.find({ "email": payload["email"] }, {"apikey": 0, "email": 0})
     projects = json.loads(json_util.dumps(list(cursor)))
+    user_details = {
+        "username": existing_user["username"],
+        "email": existing_user["email"]
+    }
     
-    return {"message": "Signup successful!", "token": jwt_token, "projects": projects}
+    return {"message": "Signup successful!", "token": jwt_token, "projects": projects, "user": user_details}
 
 @app.post("/login")
 def login(user: UserLogin):
