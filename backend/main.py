@@ -175,8 +175,12 @@ def login(user: UserLogin):
     jwt_token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
     cursor = projects_collection.find({ "email": payload["email"] }, {"apikey": 0, "email": 0})
     projects = json.loads(json_util.dumps(list(cursor)))
+    user_details = {
+        "username": db_user.username,
+        "email": db_user.email
+    }
     
-    return {"message": "Login successful!", "token": jwt_token, "projects": projects}
+    return {"message": "Login successful!", "token": jwt_token, "projects": projects, "user": user_details}
 
 @app.post('/new-project')
 def create_project(project: Projects):
