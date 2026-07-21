@@ -85,6 +85,10 @@ class Chat(BaseModel):
     apikey: str
     text: str
 
+class UserSettings(BaseModel):
+    username: str
+    email: str
+
 # Utilities
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -312,3 +316,17 @@ def chatbot(chat: Chat):
         raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
 
     return { "message": "Details sent successfully", "response": response }
+
+@app.post('/settings')
+def save_settings_change(user: UserSettings):
+    try:
+        users_collection.update_one({"email": user.email}, { $set: { "username": user.username } })
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
+
+    user_details = {
+        "username": user.username,
+        "email": user.email
+    }
+
+    return {"message": "Updated successfully", "user": user_details}
