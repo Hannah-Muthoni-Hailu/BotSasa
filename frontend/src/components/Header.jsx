@@ -14,8 +14,8 @@ export default function Header() {
                     <img src={logo} alt="logo" height="40" className="pt-1 mt-2" />
                     <h2 className="m-0 text-white align-self-start logoText">BotSasa</h2>
                 </Navbar.Brand>
-                <div className="mx-1 p-0 w-25 d-flex flex-row justify-content-end">
-                    <Link to="/signup" state={{ isSigningUp: 'true' }} className='mx-1'>
+                <div className="mx-md-3 mx-1 p-0 w-25 d-flex flex-row justify-content-end">
+                    <Link to="/signup" state={{ isSigningUp: 'true' }} className='mx-md-3 mx-1'>
                         <Button className='btn-clear'>Signup</Button>
                     </Link>
                     <Link to="/signup" state={{ isSigningUp: 'false' }}>
