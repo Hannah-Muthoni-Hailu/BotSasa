@@ -43,6 +43,7 @@ export default function Signup() {
 
             localStorage.setItem("access_token", response.token);
             localStorage.setItem("projects", response.projects);
+            localStorage.setItem("user", JSON.stringify(response.user));
 
             navigate("/dashboard");
 
@@ -79,6 +80,7 @@ export default function Signup() {
 
             localStorage.setItem("access_token", response.token);
             localStorage.setItem("projects", JSON.stringify(response.projects));
+            localStorage.setItem("user", JSON.stringify(response.user));
 
             navigate("/dashboard");
 

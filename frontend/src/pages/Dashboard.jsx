@@ -6,6 +6,7 @@ import trash from '../assets/Trash 2.png'
 import penTool from '../assets/Pen tool.png'
 import logo from '../assets/logo.png';
 import plus from '../assets/Plus.png';
+import settings from '../assets/Settings.png';
 
 export default function Dashboard() {
     const navigate = useNavigate()
@@ -235,6 +236,9 @@ export default function Dashboard() {
             </div>
 
             <main>
+                <a href="/settings" className="text-decoration-none float-end mt-4">
+                    <img src={settings} alt="settings gear icon" height="40" />
+                </a>
                 <Button className='new-project mt-4' onClick={() => setShow(true)}>
                     <img src={plus} alt="plus sign" height={20} /> New Project
                 </Button>
