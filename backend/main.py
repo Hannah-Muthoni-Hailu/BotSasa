@@ -320,7 +320,7 @@ def chatbot(chat: Chat):
 @app.post('/settings')
 def save_settings_change(user: UserSettings):
     try:
-        users_collection.update_one({"email": user.email}, { $set: { "username": user.username } })
+        users_collection.update_one({"email": user.email}, { "$set": { "username": user.username } })
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
 
