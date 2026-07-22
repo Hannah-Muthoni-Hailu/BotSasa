@@ -338,7 +338,7 @@ def save_settings_change(user: UserSettings):
 @app.post('/accept-payment')
 def accept_payment(payment: Payment):
     try:
-        projects_collection.update_one({ "email": payment["email"], "projectName": payment['projectName'] }, {"$set": {"endBillingCycle": datetime.now(timezone.utc) + timedelta(days=28), "quotaUsage": 0,}})
+        projects_collection.update_one({ "email": payment.email, "projectName": payment.projectName }, {"$set": {"endBillingCycle": datetime.now(timezone.utc) + timedelta(days=28), "quotaUsage": 0,}})
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"There was an error updating end of billing cycle. {str(e)}")
 
