@@ -299,7 +299,7 @@ def chatbot(chat: Chat):
         raise HTTPException(status_code=400, detail="Invalid API key")
     
     # Check if quota limit has been exceeded or if billing cycle is passed
-    if (project["quotaLimit"] and project["quotaUsage"] >= project["quotaLimit"]) or (datetime.now(timezone.utc) < project['endBillingCycle']):
+    if (project["quotaLimit"] and project["quotaUsage"] >= project["quotaLimit"]) or (datetime.now() < project['endBillingCycle'].replace(tzinfo=None)):
         raise HTTPException(status_code=400, detail="You have exceeded your quota limit for the month")
     
     # Increment usage
