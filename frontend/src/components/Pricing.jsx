@@ -8,7 +8,7 @@ import Slider from '@mui/material/Slider';
 
 export default function Pricing() {
     let [users, setUsers] = useState(0);
-    let [estimate, setEstimate] = useState(`Ksh.${users * 0.005}`)
+    let [estimate, setEstimate] = useState(`Ksh.${users * 2}`)
     const marks = [
         {
             value: 0,
@@ -34,14 +34,14 @@ export default function Pricing() {
 
     function valuetext(value) {
         setUsers(value);
-        setEstimate(`Ksh.${value * 0.05}`);
+        setEstimate(`Ksh.${value * 2}`);
     };
 
     return(
         <Container className="text-center text-white mt-5 pt-3" id="pricing">
             <div className="text-start bg-white text-black price-box p-4">
                 <h2 className='my-0 ms-3'>Only pay for what you use</h2>
-                <p className='fs-6 ms-3'>Drag the toggle to see an estimated cost based on number of chatbot messages</p>
+                <p className='fs-6 ms-3'>Get a chatbot at only two shilling per message</p>
                 <Box sx={{ width: "75%" }} className="mx-auto">
                     <Slider
                         aria-label="Always visible"

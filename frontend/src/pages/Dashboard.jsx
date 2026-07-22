@@ -7,9 +7,11 @@ import penTool from '../assets/Pen tool.png'
 import logo from '../assets/logo.png';
 import plus from '../assets/Plus.png';
 import settings from '../assets/Settings.png';
+import PaystackPop from "@paystack/inline-js";
 
 export default function Dashboard() {
     const navigate = useNavigate()
+    const popup = new PaystackPop();
     const [token, setToken] = useState(localStorage.getItem("access_token"))
 
     // Set the token
@@ -56,6 +58,10 @@ export default function Dashboard() {
     const [showKey, setShowKey] = useState(false);
     const [copied, setCopied] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
+    const [user, setUser] = useState(() => {
+        const saved_user = JSON.parse(localStorage.getItem("user"));
+        return saved_user ? saved_user : []
+    });
 
     const handleDelete = (project) => {
         setEditedProject(project)
@@ -222,6 +228,47 @@ export default function Dashboard() {
         }
     };
 
+    const handlePayment = async (projectName, quotaUsage) => {
+        const useremail = user['email']
+        popup.checkout({
+            key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+            email: "customer@example.com",
+            amount: quotaUsage * 2 * 100,
+            onSuccess: async (transaction) => {
+                try {
+                    const res = await fetch('https://botsasa-6acp.onrender.com/accept-payment', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ 
+                            "email": useremail, 
+                            "projectName": projectName })
+                    })
+
+                    const response = await res.json()
+
+                    if (!res.ok) {
+                        throw new Error(response.detail || "Update failed")
+                    }
+
+                    localStorage.setItem("projects", JSON.stringify(response.projects));
+                    alert(`${response.message}`)
+                    alert("Reload page if it does not reload automatically to view changes")
+                    window.location.reload()
+                } catch (error) {
+                    alert("An error occured. Please DO NOT attempt a repayment. Reach out to us through email at muthonihannahhailu@gmail.com")
+                    console.log(error)
+                }
+
+                console.log(transaction.reference);
+            },
+            onCancel: () => {    
+            console.log("Payment cancelled");
+            },
+        });
+    }
+
     return (
         <Container>
             <div>
@@ -236,6 +283,9 @@ export default function Dashboard() {
             </div>
 
             <main>
+                {projects.map(project => {
+                    return (<div key={project.projectName}>{((new Date(project.endBillingCycle.$date) < new Date()) && (project.quotaUsage > 0)) ? <Alert variant="danger">Project {project.projectName} paused. Click pay to resume</Alert> : null }</div>)
+                })}
                 <a href="/settings" className="text-decoration-none float-end mt-4">
                     <img src={settings} alt="settings gear icon" height="40" />
                 </a>
@@ -260,7 +310,7 @@ export default function Dashboard() {
                                         <td>{project.projectName}</td>
                                         <td>{project.quotaLimit ? project.quotaLimit : "None"}</td>
                                         <td>{new Date(project.endBillingCycle.$date).toISOString().split('T')[0]}</td>
-                                        <td>{project.quotaUsage}</td>
+                                        <td>{((new Date(project.endBillingCycle.$date) > new Date()) || (project.quotaUsage == 0)) ? project.quotaUsage : <Button onClick={() => handlePayment(project.projectName, project.quotaUsage)}>Pay</Button> }</td>
                                         <td>
                                             <button className='border border-light rounded-circle me-1 mb-1'>
                                                 <img src={penTool} alt="edit icon" height={20} onClick={() => handleEdit(project)} />

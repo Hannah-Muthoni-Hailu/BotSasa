@@ -35,8 +35,8 @@ export default function Settings() {
     }, [token, navigate]);
 
     const [user, setUser] = useState(() => {
-        const saved_projects = JSON.parse(localStorage.getItem("user"));
-        return saved_projects ? saved_projects : []
+        const saved_user = JSON.parse(localStorage.getItem("user"));
+        return saved_user ? saved_user : []
     });
     const [isSending, setIsSending] = useState(false);
 
