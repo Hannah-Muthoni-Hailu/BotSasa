@@ -89,6 +89,10 @@ class UserSettings(BaseModel):
     username: str
     email: str
 
+class Payment(BaseModel):
+    email: str
+    projectName: str
+
 # Utilities
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -330,3 +334,15 @@ def save_settings_change(user: UserSettings):
     }
 
     return {"message": "Updated successfully", "user": user_details}
+
+@app.post('/accept-payment')
+def accept_payment(payment: Payment):
+    try:
+        projects_collection.update_one({ "email": payment["email"], "projectName": payment['projectName'] }, {"$set": {"endBillingCycle": datetime.now(timezone.utc) + timedelta(days=28)}})
+    except:
+        raise HTTPException(status_code=401, detail="There was an error updating end of billing cycle")
+
+    cursor = projects_collection.find({ "email": payload["email"] }, {"apikey": 0, "email": 0})
+    projects = json.loads(json_util.dumps(list(cursor)))
+    
+    return {"message": f"Your project {payment['projectName']} has been resumed. If there are any issues please email muthonihannahhailu@gmail.com", "projects": projects}
