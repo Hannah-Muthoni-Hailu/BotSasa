@@ -345,4 +345,4 @@ def accept_payment(payment: Payment):
     cursor = projects_collection.find({ "email": payment.email }, {"apikey": 0, "email": 0})
     projects = json.loads(json_util.dumps(list(cursor)))
     
-    return {"message": f"Your project {payment['projectName']} has been resumed. If there are any issues please email muthonihannahhailu@gmail.com", "projects": projects}
+    return {"message": f"Your project {payment.projectName} has been resumed. If there are any issues please email muthonihannahhailu@gmail.com", "projects": projects}
