@@ -340,7 +340,7 @@ def accept_payment(payment: Payment):
     try:
         projects_collection.update_one({ "email": payment["email"], "projectName": payment['projectName'] }, {"$set": {"endBillingCycle": datetime.now(timezone.utc) + timedelta(days=28), "quotaUsage": 0,}})
     except:
-        raise HTTPException(status_code=401, detail="There was an error updating end of billing cycle")
+        raise HTTPException(status_code=401, detail=f"There was an error updating end of billing cycle. {str(e)}")
 
     cursor = projects_collection.find({ "email": payload["email"] }, {"apikey": 0, "email": 0})
     projects = json.loads(json_util.dumps(list(cursor)))
