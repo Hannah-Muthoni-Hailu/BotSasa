@@ -322,7 +322,7 @@ def chatbot(chat: Chat):
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
 
-    return { "message": "Details sent successfully", "response": response }
+    return { "message": "Details sent successfully", "response": response['output'][0]['content'][0]['text'] }
 
 @app.post('/settings')
 def save_settings_change(user: UserSettings):
