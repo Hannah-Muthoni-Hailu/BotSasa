@@ -317,7 +317,11 @@ def chatbot(chat: Chat):
     try:
         response = client.responses.create(
             model="gpt-5.1",
-            input=f"Based on this text: {project["context"]}, answer the following question: {chat.text}"
+            input=f"""
+                Based on this text: {project["context"]}, answer the following question: {chat.text}.
+                Do not make reference to the fact that there is provided text.
+                If the information is not available in the provided text, use your own judgement to answer
+            """
         )
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
