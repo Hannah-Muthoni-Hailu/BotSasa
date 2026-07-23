@@ -38,11 +38,13 @@ export default function Chatbot() {
             });
 
             const data = await response.json();
+            console.log(data)
 
             const botMessage = {
             message: data.response,
             sender: "bot"
             };
+            
 
             // Add bot response
             setMessages((prev) => [...prev, botMessage]);
