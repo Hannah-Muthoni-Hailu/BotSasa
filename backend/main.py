@@ -306,25 +306,23 @@ def chatbot(chat: Chat):
     if not project:
         raise HTTPException(status_code=400, detail="Invalid API key")
     
-    return { "project": project }
+    # Check if quota limit has been exceeded or if billing cycle is passed
+    if (project["quotaLimit"] and project["quotaUsage"] >= project["quotaLimit"]) or (datetime.now() > project['endBillingCycle'].replace(tzinfo=None)):
+        raise HTTPException(status_code=400, detail="You have exceeded your quota limit for the month")
     
-    # # Check if quota limit has been exceeded or if billing cycle is passed
-    # if (project["quotaLimit"] and project["quotaUsage"] >= project["quotaLimit"]) or (datetime.now() > project['endBillingCycle'].replace(tzinfo=None)):
-    #     raise HTTPException(status_code=400, detail="You have exceeded your quota limit for the month")
-    
-    # # Increment usage
-    # projects_collection.update_one({ "apikey": apikey }, {"$set": {"quotaUsage": project["quotaUsage"] + 1}})
+    # Increment usage
+    projects_collection.update_one({ "apikey": apikey }, {"$set": {"quotaUsage": project["quotaUsage"] + 1}})
 
-    # # Call inference endpoint with project["context"] as context
-    # try:
-    #     response = client.responses.create(
-    #         model="gpt-5.1",
-    #         input=f"Based on this text: {project["context"]}, answer the following question: {chat.text}"
-    #     )
-    # except Exception as e:
-    #     raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
+    # Call inference endpoint with project["context"] as context
+    try:
+        response = client.responses.create(
+            model="gpt-5.1",
+            input=f"Based on this text: {project["context"]}, answer the following question: {chat.text}"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
 
-    # return { "message": "Details sent successfully", "response": response }
+    return { "message": "Details sent successfully", "response": response }
 
 @app.post('/settings')
 def save_settings_change(user: UserSettings):
