@@ -40,7 +40,7 @@ export default function Chatbot() {
             const data = await response.json();
 
             const botMessage = {
-            message: data.response.answer,
+            message: data.response,
             sender: "bot"
             };
 
