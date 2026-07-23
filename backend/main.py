@@ -18,6 +18,7 @@ import re
 import secrets
 import hashlib
 from huggingface_hub import InferenceClient
+from openai import OpenAI
 
 load_dotenv()
 
@@ -43,11 +44,14 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 # JWT authentication secret key
 SECRET_KEY = os.getenv('SECRET_KEY') # Generated using Python's secrets library
 
-# Inference client
-client = InferenceClient(
-    provider="hf-inference",
-    api_key=os.getenv("HF_TOKEN")
-)
+# # Inference client
+# client = InferenceClient(
+#     provider="hf-inference",
+#     api_key=os.getenv("HF_TOKEN")
+# )
+
+# OpenAI model client
+client = OpenAI()
 
 class ProjectType(str, Enum):
     PAID = "paid"
@@ -311,10 +315,14 @@ def chatbot(chat: Chat):
 
     # Call inference endpoint with project["context"] as context
     try:
-        response = client.question_answering(
-            question=chat.text,
-            context=project["context"],
-            model="distilbert/distilbert-base-cased-distilled-squad"
+        # response = client.question_answering(
+        #     question=chat.text,
+        #     context=project["context"],
+        #     model="distilbert/distilbert-base-cased-distilled-squad"
+        # )
+        response = client.responses.create(
+            model="gpt-5.1",
+            input=f"Based on this text: {project["context"]}, answer the following question: {chat.text}"
         )
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"An internal server error occurred: {str(e)}")
