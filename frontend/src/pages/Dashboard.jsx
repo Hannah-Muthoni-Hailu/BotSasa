@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Button, Modal, Form, Alert, Card, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Clipboard, Check } from 'react-bootstrap-icons';
+import Footer from '../components/Footer';
 import trash from '../assets/Trash 2.png'
 import penTool from '../assets/Pen tool.png'
 import logo from '../assets/logo.png';
@@ -271,62 +272,63 @@ export default function Dashboard() {
 
     return (
         <Container>
-            <div>
-                <div
-                    href="/home"
-                    className='w-50 d-flex align-items-center justify-content-start justify-content-lg-center pt-0 mt-2'
-                    style={{ 'marginLeft': '25%' }}
-                >
-                    <img src={logo} alt="logo" height="40" className="pt-1 mt-2" />
-                    <h2 className="m-0 text-white align-self-start logoText">BotSasa</h2>
+            <div className='min-vh-100'>
+                <div>
+                    <div
+                        href="/home"
+                        className='w-50 d-flex align-items-center justify-content-start justify-content-lg-center pt-0 mt-2'
+                        style={{ 'marginLeft': '25%' }}
+                    >
+                        <img src={logo} alt="logo" height="40" className="pt-1 mt-2" />
+                        <h2 className="m-0 text-white align-self-start logoText">BotSasa</h2>
+                    </div>
                 </div>
+
+                <main>
+                    {projects.map(project => {
+                        return (<div key={project.projectName}>{((new Date(project.endBillingCycle.$date) < new Date()) && (project.quotaUsage > 0)) ? <Alert variant="danger">Project {project.projectName} paused. Click pay to resume</Alert> : null }</div>)
+                    })}
+                    <a href="/settings" className="text-decoration-none float-end mt-4">
+                        <img src={settings} alt="settings gear icon" height="40" />
+                    </a>
+                    <Button className='new-project mt-4' onClick={() => setShow(true)}>
+                        <img src={plus} alt="plus sign" height={20} /> New Project
+                    </Button>
+                    <table className='table mt-4 projects-table'>
+                        <thead>
+                            <tr style={{ '--bs-table-bg': '#8c8dce', 'backgroundColor': '#8c8dce', '--bs-table-color': '#ffffff' }}>
+                                <th>Project Name</th>
+                                <th>Quota Limit</th>
+                                <th>Billing Cycle End Date</th>
+                                <th>Total Spending</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                projects.map((project) => {
+                                    return (
+                                        <tr key={project.projectName} style={{ '--bs-table-bg': '#4B4CA1', 'backgroundColor': '#4B4CA1', '--bs-table-color': '#ffffff' }}>
+                                            <td>{project.projectName}</td>
+                                            <td>{project.quotaLimit ? project.quotaLimit : "None"}</td>
+                                            <td>{new Date(project.endBillingCycle.$date).toISOString().split('T')[0]}</td>
+                                            <td>{((new Date(project.endBillingCycle.$date) > new Date()) || (project.quotaUsage == 0)) ? project.quotaUsage : <Button onClick={() => handlePayment(project.projectName, project.quotaUsage)}>Pay</Button> }</td>
+                                            <td>
+                                                <button className='border border-light rounded-circle me-1 mb-1'>
+                                                    <img src={penTool} alt="edit icon" height={20} onClick={() => handleEdit(project)} />
+                                                </button>
+                                                <button className='border border-danger rounded-circle bg-danger'>
+                                                    <img src={trash} alt="trash icon" height={20} onClick={() => handleDelete(project)} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </main>
             </div>
-
-            <main>
-                {projects.map(project => {
-                    return (<div key={project.projectName}>{((new Date(project.endBillingCycle.$date) < new Date()) && (project.quotaUsage > 0)) ? <Alert variant="danger">Project {project.projectName} paused. Click pay to resume</Alert> : null }</div>)
-                })}
-                <a href="/settings" className="text-decoration-none float-end mt-4">
-                    <img src={settings} alt="settings gear icon" height="40" />
-                </a>
-                <Button className='new-project mt-4' onClick={() => setShow(true)}>
-                    <img src={plus} alt="plus sign" height={20} /> New Project
-                </Button>
-                <table className='table mt-4 projects-table'>
-                    <thead>
-                        <tr style={{ '--bs-table-bg': '#8c8dce', 'backgroundColor': '#8c8dce', '--bs-table-color': '#ffffff' }}>
-                            <th>Project Name</th>
-                            <th>Quota Limit</th>
-                            <th>Billing Cycle End Date</th>
-                            <th>Total Spending</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            projects.map((project) => {
-                                return (
-                                    <tr key={project.projectName} style={{ '--bs-table-bg': '#4B4CA1', 'backgroundColor': '#4B4CA1', '--bs-table-color': '#ffffff' }}>
-                                        <td>{project.projectName}</td>
-                                        <td>{project.quotaLimit ? project.quotaLimit : "None"}</td>
-                                        <td>{new Date(project.endBillingCycle.$date).toISOString().split('T')[0]}</td>
-                                        <td>{((new Date(project.endBillingCycle.$date) > new Date()) || (project.quotaUsage == 0)) ? project.quotaUsage : <Button onClick={() => handlePayment(project.projectName, project.quotaUsage)}>Pay</Button> }</td>
-                                        <td>
-                                            <button className='border border-light rounded-circle me-1 mb-1'>
-                                                <img src={penTool} alt="edit icon" height={20} onClick={() => handleEdit(project)} />
-                                            </button>
-                                            <button className='border border-danger rounded-circle bg-danger'>
-                                                <img src={trash} alt="trash icon" height={20} onClick={() => handleDelete(project)} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
-            </main>
-
             {/* Modal for creating a new project */}
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Body className='p-0'>
@@ -448,6 +450,9 @@ export default function Dashboard() {
                     </div>
                 </Modal.Body>
             </Modal>
+            <div>
+                <Footer />
+            </div>
         </Container>
     )
 }
