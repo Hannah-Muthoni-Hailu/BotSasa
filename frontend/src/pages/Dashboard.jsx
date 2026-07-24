@@ -329,46 +329,48 @@ export default function Dashboard() {
 
             {/* Modal for creating a new project */}
             <Modal show={show} onHide={() => setShow(false)}>
-                <Form className='px-3 px-lg-5 pt-4 pb-5'>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Form.Group className="mb-3" controlId="projectName">
-                        <Form.Label>Enter project name</Form.Label>
-                        <Form.Control type="text" placeholder="My cool project" value={projectName} onChange={e => setProjectName(e.target.value)} />
-                    </Form.Group>
+                <Modal.Body className='p-0'>
+                    <Form className='p-5 px-lg-5 modal-form rounded-5 text-white'>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                        <Form.Group className="mb-3" controlId="projectName">
+                            <Form.Label>Enter project name</Form.Label>
+                            <Form.Control type="text" placeholder="My cool project" value={projectName} onChange={e => setProjectName(e.target.value)} />
+                        </Form.Group>
 
-                    <Form.Group controlId='contextFile' className='mb-3 mt-3'>
-                        <Form.Label>
-                            Input context file (.txt format only)
-                        </Form.Label>
-                        <Form.Control type='file' accept='.txt' onChange={handleFileChange} />
-                    </Form.Group>
-                    <div className="text-center">
-                        <Button className='get-started me-2' style={{ 'width': "80px" }} onClick={() => setShow(false)}>Close</Button>
-                        <Button className='get-started' onClick={handleSubmit}>
-                            {isSending ?
-                                <Spinner
-                                    as="span"
-                                    animation="grow"
-                                    size="sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                /> :
-                                null
-                            }
-                            Submit
-                        </Button>
-                    </div>
-                </Form>
+                        <Form.Group controlId='contextFile' className='mb-3 mt-3'>
+                            <Form.Label>
+                                Input context file (.txt format only)
+                            </Form.Label>
+                            <Form.Control type='file' accept='.txt' onChange={handleFileChange} />
+                        </Form.Group>
+                        <div className="text-center">
+                            <Button className='get-started me-2' style={{ 'width': "80px" }} onClick={() => setShow(false)}>Close</Button>
+                            <Button className='get-started' onClick={handleSubmit}>
+                                {isSending ?
+                                    <Spinner
+                                        as="span"
+                                        animation="grow"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    /> :
+                                    null
+                                }
+                                Submit
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
             </Modal>
 
             {/* Modal for displaying an api key */}
             <Modal show={showKey} backdrop="static" onHide={handleApiClose}>
-                <Modal.Header closeButton>
-                    API key
+                <Modal.Header className='text-white' closeButton>
+                    <h5>API key</h5>
                 </Modal.Header>
-                    <Modal.Body className='p-4'>
-                        <p><strong>Copy the api key below</strong></p>
-                        <p className='text-danger'><small>Note that once you close this modal, you cannot view the key again</small></p>
+                    <Modal.Body className='p-4 modal-form rounded-5'>
+                        <p className='text-white fs-5 mb-0'><strong>Copy the api key below</strong></p>
+                        <p className='text-danger border border-danger rounded-1 bg-black p-1'><small>Note that once you close this modal, you cannot view the key again</small></p>
                         <Card className="position-relative bg-light">
                             <Button variant="outline-secondary" size="sm" onClick={handleCopy} style={{position: 'absolute', top: '0.5rem', right: '0.5rem', zIndex: 10,}}>
                                {copied ? <Check /> : <Clipboard />}
@@ -379,13 +381,14 @@ export default function Dashboard() {
                                 </pre>
                             </Card.Body>
                         </Card>
-                        <p>To use your chatbot, send a fetch request to "<a href="#" className='text-black text-decoration-underline'>https://botsasa-6acp.onrender.com/chatbot</a>" <br /> supplying <code>("apikey": "string", "text": "string" )</code>.</p>
+                        <p className='mt-5 mb-1 text-white'>To use your chatbot, send a fetch request to: <code className='border border-secondary p-3 d-inline-block rounded-3'><a href="#" className='text-white text-decoration-underline'>https://botsasa-6acp.onrender.com/chatbot</a></code> <br /> supplying <code>("apikey": "string", "text": "string" )</code>.</p>
+                        <p className='text-white mt-0'>Feel free to ask BotSasa's chatbot for further guidance</p>
                     </Modal.Body>
             </Modal>
 
             {/* Modal for editing an existing project */}
             <Modal show={showEdit} onHide={() => setShowEdit(false)}>
-                <Form className='px-3 px-lg-5 pt-4 pb-5'>
+                <Form className='p-5 px-lg-5 modal-form rounded-5 text-white'>
                     {error && <Alert variant="danger" dismissible>{error}</Alert>}
                     <Form.Group className="mb-3" controlId="projectName">
                         <Form.Label>Enter project name</Form.Label>
@@ -422,23 +425,27 @@ export default function Dashboard() {
 
             {/* Modal for deleting an existing project */}
             <Modal show={showDelete} onHide={() => setShowDelete(false)}>
-                <Modal.Body >
-                    <h3>Are you sure you want to delete this project?</h3>
-                    <p className="text-danger">This action cannot be undone</p>
-                    <Button className='get-started me-2' style={{ 'width': "80px" }} onClick={() => setShowDelete(false)}>No</Button>
-                    <Button className='get-started' style={{ 'width': "80px" }} onClick={handleDeleteConfirmed}>
-                        {isSending ?
-                            <Spinner
-                                as="span"
-                                animation="grow"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                            /> :
-                            null
-                        }
-                        Yes
-                    </Button>
+                <Modal.Header className='text-white' closeButton>
+                    <h4>Are you sure you want to delete this project?</h4>
+                </Modal.Header>
+                <Modal.Body className='p-5'>
+                    <p className='text-danger border border-danger rounded-1 bg-black p-2 w-75 fs-5 text-center mx-auto'><small>This action cannot be undone</small></p>
+                    <div className='w-50 mx-auto d-flex justify-content-around'>
+                        <Button className='get-started' style={{ 'width': "80px" }} onClick={() => setShowDelete(false)}>No</Button>
+                        <Button className='get-started' style={{ 'width': "80px" }} onClick={handleDeleteConfirmed}>
+                            {isSending ?
+                                <Spinner
+                                    as="span"
+                                    animation="grow"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                /> :
+                                null
+                            }
+                            Yes
+                        </Button>
+                    </div>
                 </Modal.Body>
             </Modal>
         </Container>
